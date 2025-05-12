@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Predictor - Corelytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .predictor-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .predictor-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .predictor-header h1 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .predictor-header p {
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .disease-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .disease-option {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .disease-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .disease-option i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .disease-option h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .disease-option p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .prediction-form {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .prediction-result {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .prediction-result.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-header i {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .result-header h3 {
+            margin: 0;
+        }
+
+        .result-content {
+            margin-bottom: 1.5rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background-color: var(--gray);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background-color: #616161;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .loading.visible {
+            display: block;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .disease-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Core<span>lytics</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#dashboard-section">Dashboard</a></li>
+                <li><a href="index.html#about">About</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="login-btn" id="login-btn">Login</button>
+                <button class="register-btn" id="register-btn">Register</button>
+                <button class="profile-btn hidden" id="profile-btn">My Profile</button>
+                <button class="logout-btn hidden" id="logout-btn">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="predictor-section">
+        <div class="predictor-container">
+            <div class="predictor-header">
+                <h1>AI Health Predictor</h1>
+                <p>Our advanced AI algorithms can help predict potential health issues based on your symptoms and health data. Select a disease type below to get started.</p>
+            </div>
+
+            <div class="disease-options">
+                <div class="disease-option" data-disease="diabetes">
+                    <i class="fas fa-tint"></i>
+                    <h3>Diabetes</h3>
+                    <p>Predict the likelihood of diabetes based on health metrics</p>
+                </div>
+                <div class="disease-option" data-disease="heart">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Heart Disease</h3>
+                    <p>Assess your risk of heart disease using various health indicators</p>
+                </div>
+                <div class="disease-option" data-disease="pneumonia">
+                    <i class="fas fa-lungs"></i>
+                    <h3>Pneumonia</h3>
+                    <p>Analyze chest X-ray images to detect signs of pneumonia</p>
+                </div>
+                <div class="disease-option" data-disease="parkinsons">
+                    <i class="fas fa-brain"></i>
+                    <h3>Parkinson's</h3>
+                    <p>Evaluate the likelihood of Parkinson's disease based on voice patterns</p>
+                </div>
+            </div>
+
+            <div class="prediction-form" id="prediction-form">
+                <h2 id="form-title">Select a Disease Type</h2>
+                <div id="form-content">
+                    <p>Please select a disease type from the options above to begin prediction.</p>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Analyzing your data...</p>
+            </div>
+
+            <div class="prediction-result" id="prediction-result">
+                <div class="result-header">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Prediction Results</h3>
+                </div>
+                <div class="result-content" id="result-content">
+                    <!-- Results will be displayed here -->
+                </div>
+                <div class="result-actions">
+                    <button class="back-btn" id="back-btn">Back to Options</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">
+            <h1>Core<span>lytics</span></h1>
+        </div>
+        <p>&copy; 2025 Corelytics. All rights reserved.</p>
+    </footer>
+
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const diseaseOptions = document.querySelectorAll('.disease-option');
+            const predictionForm = document.getElementById('prediction-form');
+            const formTitle = document.getElementById('form-title');
+            const formContent = document.getElementById('form-content');
+            const loading = document.getElementById('loading');
+            const predictionResult = document.getElementById('prediction-result');
+            const resultContent = document.getElementById('result-content');
+            const backBtn = document.getElementById('back-btn');
+
+            let currentDisease = '';
+
+       
+            diseaseOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    currentDisease = this.getAttribute('data-disease');
+                    showPredictionForm(currentDisease);
+                });
+            });
+
+
+            backBtn.addEventListener('click', function() {
+                predictionResult.classList.remove('visible');
+                predictionForm.style.display = 'block';
+            });
+
+           
+            function showPredictionForm(disease) {
+                formTitle.textContent = getDiseaseTitle(disease);
+                formContent.innerHTML = getDiseaseForm(disease);
+                predictionForm.style.display = 'block';
+                predictionResult.classList.remove('visible');
+
+               
+                const predictBtn = document.getElementById('predict-btn');
+                if (predictBtn) {
+                    predictBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showLoading();
+                        setTimeout(() => {
+                            const result = predictDisease(disease);
+                            showResult(result);
+                        }, 2000); 
+                    });
+                }
+            }
+
+           
+            function getDiseaseTitle(disease) {
+                const titles = {
+                    'diabetes': 'Diabetes Prediction',
+                    'heart': 'Heart Disease Prediction',
+                    'pneumonia': 'Pneumonia Detection',
+                    'parkinsons': "Parkinson's Disease Prediction"
+                };
+                return titles[disease] || 'Disease Prediction';
+            }
+
+           
+            function getDiseaseForm(disease) {
+                switch(disease) {
+                    case 'diabetes':
+                        return `
+                            <form id="diabetes-form">
+                                <div class="form-group">
+                                    <label for="pregnancies">Number of Pregnancies</label>
+                                    <input type="number" id="pregnancies" min="0" max="20" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="glucose">Glucose Level (mg/dL)</label>
+                                    <input type="number" id="glucose" min="0" max="500" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="blood-pressure">Blood Pressure (mm Hg)</label>
+                                    <input type="number" id="blood-pressure" min="0" max="200" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="skin-thickness">Skin Thickness (mm)</label>
+                                    <input type="number" id="skin-thickness" min="0" max="100" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="insulin">Insulin Level (mu U/ml)</label>
+                                    <input type="number" id="insulin" min="0" max="1000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bmi">BMI (kg/m²)</label>
+                                    <input type="number" id="bmi" min="10" max="50" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diabetes-pedigree">Diabetes Pedigree Function</label>
+                                    <input type="number" id="diabetes-pedigree" min="0" max="3" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Age (years)</label>
+                                    <input type="number" id="age" min="1" max="120" required>
+                                </div>
+                                <button type="submit" class="submit-btn" id="predict-btn">Predict</button>
+                            </form>
+                        `;
+                    case 'heart':
+                        return `
+                            <form id="heart-form">
+                                <div class="form-group">
+                                    <label for="age-heart">Age (years)</label>
+                                    <input type="number" id="age-heart" min="1" max="120" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sex">Sex</label>
+                                    <select id="sex" required>
+                                        <option value="">Select</option>
+                                        <option value="1">Male</option>
+                                        <option value="0">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cp">Chest Pain Type</label>
+                                    <select id="cp" required>
+                                        <option value="">Select</option>
+                                        <option value="0">Typical Angina</option>
+                                        <option value="1">Atypical Angina</option>
+                                        <option value="2">Non-anginal Pain</option>
+                                        <option value="3">Asymptomatic</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trestbps">Resting Blood Pressure (mm Hg)</label>
+                                    <input type="number" id="trestbps" min="0" max="300" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="chol">Cholesterol (mg/dL)</label>
+                                    <input type="number" id="chol" min="0" max="1000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fbs">Fasting Blood Sugar > 120 mg/dL</label>
+                                    <select id="fbs" required>
+                                        <option value="">Select</option>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="restecg">Resting ECG Results</label>
+                                    <select id="restecg" required>
+                                        <option value="">Select</option>
+                                        <option value="0">Normal</option>
+                                        <option value="1">ST-T Wave Abnormality</option>
+                                        <option value="2">Left Ventricular Hypertrophy</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="thalach">Maximum Heart Rate Achieved</label>
+                                    <input type="number" id="thalach" min="0" max="250" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exang">Exercise Induced Angina</label>
+                                    <select id="exang" required>
+                                        <option value="">Select</option>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="oldpeak">ST Depression</label>
+                                    <input type="number" id="oldpeak" min="0" max="10" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="slope">Slope of Peak Exercise ST</label>
+                                    <select id="slope" required>
+                                        <option value="">Select</option>
+                                        <option value="0">Upsloping</option>
+                                        <option value="1">Flat</option>
+                                        <option value="2">Downsloping</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ca">Number of Major Vessels</label>
+                                    <select id="ca" required>
+                                        <option value="">Select</option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="thal">Thalassemia</label>
+                                    <select id="thal" required>
+                                        <option value="">Select</option>
+                                        <option value="0">Null</option>
+                                        <option value="1">Fixed Defect</option>
+                                        <option value="2">Normal</option>
+                                        <option value="3">Reversable Defect</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="submit-btn" id="predict-btn">Predict</button>
+                            </form>
+                        `;
+                    case 'pneumonia':
+                        return `
+                            <form id="pneumonia-form">
+                                <div class="form-group">
+                                    <p>For pneumonia detection, we would typically analyze chest X-ray images. Since we can't upload images in this demo, we'll use a simplified form with symptoms.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fever">Fever (°C)</label>
+                                    <input type="number" id="fever" min="35" max="42" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cough">Cough</label>
+                                    <select id="cough" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="difficulty-breathing">Difficulty Breathing</label>
+                                    <select id="difficulty-breathing" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="chest-pain">Chest Pain</label>
+                                    <select id="chest-pain" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fatigue">Fatigue</label>
+                                    <select id="fatigue" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="submit-btn" id="predict-btn">Predict</button>
+                            </form>
+                        `;
+                    case 'parkinsons':
+                        return `
+                            <form id="parkinsons-form">
+                                <div class="form-group">
+                                    <p>For Parkinson's disease prediction, we would typically analyze voice recordings. Since we can't upload audio in this demo, we'll use a simplified form with symptoms.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tremor">Tremor</label>
+                                    <select id="tremor" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Mild</option>
+                                        <option value="2">Moderate</option>
+                                        <option value="3">Severe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rigidity">Muscle Rigidity</label>
+                                    <select id="rigidity" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Mild</option>
+                                        <option value="2">Moderate</option>
+                                        <option value="3">Severe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bradykinesia">Bradykinesia (Slowness of Movement)</label>
+                                    <select id="bradykinesia" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Mild</option>
+                                        <option value="2">Moderate</option>
+                                        <option value="3">Severe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="postural-instability">Postural Instability</label>
+                                    <select id="postural-instability" required>
+                                        <option value="">Select</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Mild</option>
+                                        <option value="2">Moderate</option>
+                                        <option value="3">Severe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age-parkinsons">Age (years)</label>
+                                    <input type="number" id="age-parkinsons" min="1" max="120" required>
+                                </div>
+                                <button type="submit" class="submit-btn" id="predict-btn">Predict</button>
+                            </form>
+                        `;
+                    default:
+                        return '<p>Please select a disease type from the options above to begin prediction.</p>';
+                }
+            }
+
+            function showLoading() {
+                predictionForm.style.display = 'none';
+                loading.classList.add('visible');
+            }
+
+           
+            function hideLoading() {
+                loading.classList.remove('visible');
+            }
+
+   
+            function predictDisease(disease) {
+                
+                let probability = Math.random() * 100;
+                let result = {
+                    disease: getDiseaseTitle(disease),
+                    probability: probability.toFixed(2),
+                    risk: probability > 50 ? 'High' : 'Low',
+                    recommendations: getRecommendations(disease, probability)
+                };
+                
+                return result;
+            }
+
+           
+            function getRecommendations(disease, probability) {
+                let recommendations = [];
+                
+                if (probability > 50) {
+                    recommendations.push('Schedule a consultation with your healthcare provider as soon as possible.');
+                } else {
+                    recommendations.push('Continue with regular check-ups and maintain a healthy lifestyle.');
+                }
+                
+                switch(disease) {
+                    case 'diabetes':
+                        recommendations.push('Monitor your blood sugar levels regularly.');
+                        recommendations.push('Follow a balanced diet low in refined sugars.');
+                        recommendations.push('Engage in regular physical activity.');
+                        break;
+                    case 'heart':
+                        recommendations.push('Maintain a heart-healthy diet low in saturated fats.');
+                        recommendations.push('Exercise regularly to strengthen your heart.');
+                        recommendations.push('Manage stress through relaxation techniques.');
+                        break;
+                    case 'pneumonia':
+                        recommendations.push('Rest and stay hydrated.');
+                        recommendations.push('Avoid smoking and exposure to secondhand smoke.');
+                        recommendations.push('Practice good hygiene to prevent infection.');
+                        break;
+                    case 'parkinsons':
+                        recommendations.push('Consider consulting a neurologist for a thorough evaluation.');
+                        recommendations.push('Engage in physical therapy to maintain mobility.');
+                        recommendations.push('Join support groups for emotional and practical support.');
+                        break;
+                }
+                
+                return recommendations;
+            }
+
+            
+            function showResult(result) {
+                hideLoading();
+                
+                let riskClass = result.risk === 'High' ? 'danger' : 'success';
+                let riskIcon = result.risk === 'High' ? 'exclamation-triangle' : 'check-circle';
+                
+                resultContent.innerHTML = `
+                    <div class="result-summary">
+                        <h4>Prediction Summary</h4>
+                        <p><strong>Disease:</strong> ${result.disease}</p>
+                        <p><strong>Probability:</strong> ${result.probability}%</p>
+                        <p><strong>Risk Level:</strong> <span class="${riskClass}"><i class="fas fa-${riskIcon}"></i> ${result.risk}</span></p>
+                    </div>
+                    <div class="result-recommendations">
+                        <h4>Recommendations</h4>
+                        <ul>
+                            ${result.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="result-disclaimer">
+                        <p><strong>Disclaimer:</strong> This prediction is for informational purposes only and should not be considered a medical diagnosis. Always consult with a qualified healthcare provider for proper diagnosis and treatment.</p>
+                    </div>
+                `;
+                
+                predictionResult.classList.add('visible');
+            }
+        });
+    </script>
+</body>
+</html> 

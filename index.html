@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORELYTICS - Fitness Journey</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Core<span>lytics</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#dashboard-section">Dashboard</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="login-btn" id="login-btn">Login</button>
+                <button class="register-btn" id="register-btn">Register</button>
+                <button class="profile-btn hidden" id="profile-btn">My Profile</button>
+                <button class="logout-btn hidden" id="logout-btn">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Corelytics</h1>
+            <p>Stay motivated, track progress, and achieve your fitness goals with our comprehensive fitness tracking platform</p>
+            <button class="cta-btn" id="get-started-btn">Get Started</button>
+        </div>
+        <div class="hero-image">
+            <img src="img//Dashbord.jpg" alt="Fitness tracking">
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2>Our Features</h2>
+        <div class="features-container">
+            <div class="feature-card">
+                <i class="fas fa-heart-pulse"></i>
+                <h3>Health Metrics</h3>
+                <p>Monitor your heart rate, blood pressure, and more</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-brain"></i>
+                <h3>AI Health Predictor</h3>
+                <p>Predict potential health issues using advanced AI algorithms</p>
+                <a href="ai-health-predictor.html" class="feature-link">Learn More</a>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-weight-scale"></i>
+                <h3>Weight Management</h3>
+                <p>Track your weight and body measurements over time</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-utensils"></i>
+                <h3>Diet Plans</h3>
+                <p>Get personalized diet plans based on your goals</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-dumbbell"></i>
+                <h3>Exercise Plans</h3>
+                <p>Follow customized exercise routines for your goals</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Progress Tracking</h3>
+                <p>Visualize your progress with detailed charts</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bullseye"></i>
+                <h3>Goal Setting</h3>
+                <p>Set and track your fitness goals</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard" class="dashboard hidden">
+        <h2>Your Fitness Dashboard</h2>
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" data-tab="stats">Current Stats</button>
+            <button class="tab-btn" data-tab="progress">Progress</button>
+            <button class="tab-btn" data-tab="diet">Diet Plan</button>
+            <button class="tab-btn" data-tab="exercise">Exercise Plan</button>
+            <button class="tab-btn" data-tab="input">Input Progress</button>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Stats Tab -->
+            <div class="tab-content active" id="stats-tab">
+                <div class="stats-container">
+                    <div class="user-info-card">
+                        <h3>Profile Information</h3>
+                        <div id="user-info"></div>
+                    </div>
+                    <div class="stats-metrics">
+                        <div class="stat-card">
+                            <h3>Daily Steps</h3>
+                            <p id="steps-count">0</p>
+                            <div class="progress-bar">
+                                <div class="progress" id="steps-progress" style="width: 0%;"></div>
+                            </div>
+                            <p class="goal">Goal: <span id="steps-goal">10,000</span></p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Calories Burned</h3>
+                            <p id="calories-count">0</p>
+                            <div class="progress-bar">
+                                <div class="progress" id="calories-progress" style="width: 0%;"></div>
+                            </div>
+                            <p class="goal">Goal: <span id="calories-goal">500</span></p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Minutes</h3>
+                            <p id="active-count">0</p>
+                            <div class="progress-bar">
+                                <div class="progress" id="active-progress" style="width: 0%;"></div>
+                            </div>
+                            <p class="goal">Goal: <span id="active-goal">60</span></p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Heart Rate</h3>
+                            <p id="heart-rate">0 bpm</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Blood Pressure</h3>
+                            <p id="blood-pressure">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Tab -->
+            <div class="tab-content" id="progress-tab">
+                <div class="chart-container">
+                    <h3>Weekly Progress</h3>
+                    <canvas id="progress-chart"></canvas>
+                </div>
+                <div class="progress-history">
+                    <h3>Progress History</h3>
+                    <div id="progress-list"></div>
+                </div>
+            </div>
+            
+            <!-- Diet Plan Tab -->
+            <div class="tab-content" id="diet-tab">
+                <div class="diet-plan-container">
+                    <h3>Your Personalized Diet Plan</h3>
+                    <div id="diet-plan"></div>
+                </div>
+            </div>
+            
+            <!-- Exercise Plan Tab -->
+            <div class="tab-content" id="exercise-tab">
+                <div class="exercise-plan-container">
+                    <h3>Your Personalized Exercise Plan</h3>
+                    <div id="exercise-plan"></div>
+                </div>
+            </div>
+            
+            <!-- Input Progress Tab -->
+            <div class="tab-content" id="input-tab">
+                <div class="input-progress-container">
+                    <h3>Record Your Progress</h3>
+                    <form id="progress-form">
+                        <div class="form-group">
+                            <label for="progress-date">Date</label>
+                            <input type="date" id="progress-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="progress-weight">Weight (kg)</label>
+                            <input type="number" id="progress-weight" min="20" max="300" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="progress-height">Height (ft)</label>
+                            <input type="number" id="progress-height" min="1" max="8" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="progress-steps">Steps</label>
+                            <input type="number" id="progress-steps" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="progress-heart-rate">Heart Rate (bpm)</label>
+                            <input type="number" id="progress-heart-rate" min="40" max="220" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="progress-blood-pressure">Blood Pressure (mmHg)</label>
+                            <input type="text" id="progress-blood-pressure" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="progress-calories">Calories Intake</label>
+                            <input type="number" id="progress-calories" min="0" required>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="progress-diet-followed">
+                            <label for="progress-diet-followed">Diet Plan Followed</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="progress-exercise-done">
+                            <label for="progress-exercise-done">Exercise Completed</label>
+                        </div>
+                        <button type="submit" class="submit-btn">Save Progress</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard-section" class="dashboard-section">
+        <h2>Dashboard Overview</h2>
+        <div class="dashboard-overview">
+            <div class="dashboard-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Performance Analytics</h3>
+                <p>Track your fitness progress with detailed analytics and insights</p>
+                <a href="#dashboard" class="dashboard-link-btn">View Analytics</a>
+            </div>
+            <div class="dashboard-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Workout Schedule</h3>
+                <p>Plan and manage your workout routines with our scheduling tool</p>
+                <a href="#dashboard" class="dashboard-link-btn">View Schedule</a>
+            </div>
+            <div class="dashboard-card">
+                <i class="fas fa-trophy"></i>
+                <h3>Achievements</h3>
+                <p>Celebrate your fitness milestones and achievements</p>
+                <a href="#dashboard" class="dashboard-link-btn">View Achievements</a>
+            </div>
+            <div class="dashboard-card">
+                <i class="fas fa-users"></i>
+                <h3>Community</h3>
+                <p>Connect with other fitness enthusiasts and share your journey</p>
+                <a href="#dashboard" class="dashboard-link-btn">Join Community</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <h2>About Corelytics</h2>
+        <p>Corelytics is dedicated to helping you achieve your fitness goals through simple tracking and visualization of your progress. Our easy-to-use platform allows you to monitor your activities, set goals, follow personalized diet and exercise plans, and stay motivated throughout your fitness journey.</p>
+        
+        <div class="team-section">
+            <h3>Our Development Team</h3>
+            <div class="team-members">
+                <div class="team-member">
+                    <h4>Kumar Gaurav</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> 9905043055</li>
+                        <li><i class="fas fa-envelope"></i> kgraja125@gmail.com</li>
+                        <li><i class="fab fa-instagram"></i> @iamgaurravv</li>
+                    </ul>
+                </div>
+                <div class="team-member">
+                    <h4>Deepanjali Sharma</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> 7250647615</li>
+                        <li><i class="fas fa-envelope"></i> deepanjalis469@gmail.com</li>
+                        <li><i class="fab fa-instagram"></i> @deepanjalis469</li>
+                    </ul>
+                </div>
+                <div class="team-member">
+                    <h4>Chahat Tyagi</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> 9758085660</li>
+                        <li><i class="fas fa-envelope"></i> tyagichahat1232005@gmail.com</li>
+                        <li><i class="fab fa-instagram"></i> chahat_tyagi_</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="register-modal">&times;</span>
+            <h2>Create Your Profile</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" min="1" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="height">Height (ft)</label>
+                    <input type="number" id="height" min="1" max="8" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" min="20" max="300" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="weekly-steps">Weekly Steps</label>
+                    <input type="number" id="weekly-steps" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="heart-rate">Heart Rate (bpm)</label>
+                    <input type="number" id="heart-rate-input" min="40" max="220" required>
+                </div>
+                <div class="form-group">
+                    <label for="blood-pressure-input">Blood Pressure (mmHg)</label>
+                    <input type="text" id="blood-pressure-input" placeholder="e.g., 120/80" required>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="vegetarian">
+                    <label for="vegetarian">Vegetarian</label>
+                </div>
+                <div class="form-group">
+                    <label for="fitness-goal">Fitness Goal</label>
+                    <select id="fitness-goal" required>
+                        <option value="">Select</option>
+                        <option value="Gain Weight">Gain Weight</option>
+                        <option value="Moderate Weight">Maintain Weight</option>
+                        <option value="Lose Weight">Lose Weight</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Create Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="login-modal">&times;</span>
+            <h2>Login to Your Account</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="profile-modal">&times;</span>
+            <h2>Update Your Profile</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="update-name">Name</label>
+                    <input type="text" id="update-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-age">Age</label>
+                    <input type="number" id="update-age" min="1" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-gender">Gender</label>
+                    <select id="update-gender" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="update-password">New Password</label>
+                    <input type="password" id="update-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-height">Height (ft)</label>
+                    <input type="number" id="update-height" min="1" max="8" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-weight">Weight (kg)</label>
+                    <input type="number" id="update-weight" min="20" max="300" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-fitness-goal">Fitness Goal</label>
+                    <select id="update-fitness-goal" required>
+                        <option value="">Select</option>
+                        <option value="Gain Weight">Gain Weight</option>
+                        <option value="Moderate Weight">Maintain Weight</option>
+                        <option value="Lose Weight">Lose Weight</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Update Profile</button>
+                    <button type="button" class="delete-btn" id="delete-profile-btn">Delete Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo">
+            <h1>Core<span>lytics</span></h1>
+        </div>
+        <p>&copy; 2025 Corelytics. All rights reserved.</p>
+    </footer>
+
+    <div class="bottom-section">
+        <div class="bottom-container">
+            <div class="bottom-category">
+                <h3>Fitness</h3>
+                <ul>
+                    <li><a href="#">Weight Loss</a></li>
+                    <li><a href="#">Muscle Gain</a></li>
+                    <li><a href="#">Cardio</a></li>
+                 
+                </ul>
+            </div>
+            <div class="bottom-category">
+                <h3>Nutrition</h3>
+                <ul>
+                    <li><a href="#">Meal Plans</a></li>
+                    <li><a href="#">Diet Tips</a></li>
+                    <li><a href="#">Supplements</a></li>
+                </ul>
+            </div>
+            <div class="bottom-category">
+                <h3>Health</h3>
+                <ul>
+                    <li><a href="#">Heart Health</a></li>
+                    <li><a href="#">Mental Wellness</a></li>
+                    <li><a href="#">Stress Manangement</a></li>
+                </ul>
+            </div>
+            <div class="bottom-category">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="#">Success Stories</a></li>
+                    <li><a href="#">Challenges</a></li>
+                    <li><a href="#">Forums</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="bottom-links">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="legal-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+                <a href="#">About Us</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top-btn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
